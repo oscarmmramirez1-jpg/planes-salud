@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Plan Personal — Natalia Ramírez Henao</title>
+<style>
+  :root {
+    --primary: #7C3AED;
+    --primary-light: #A78BFA;
+    --primary-dark: #5B21B6;
+    --accent: #F59E0B;
+    --success: #10B981;
+    --bg: #F5F3FF;
+    --card: #FFFFFF;
+    --text: #1E1B4B;
+    --text-muted: #6B7280;
+    --border: #E5E7EB;
+    --shadow: 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -1px rgba(0,0,0,0.04);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 16px;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    background: linear-gradient(135deg, #5B21B6 0%, #7C3AED 55%, #A78BFA 100%);
+    color: white;
+    padding: 2rem 1.5rem 2.5rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::before {
+    content:''; position:absolute; top:-40%; right:-15%;
+    width:280px; height:280px; border-radius:50%;
+    background:rgba(255,255,255,0.06);
+  }
+  .header::after {
+    content:''; position:absolute; bottom:-35%; left:-10%;
+    width:220px; height:220px; border-radius:50%;
+    background:rgba(255,255,255,0.05);
+  }
+  .avatar {
+    width:80px; height:80px; border-radius:50%;
+    background:rgba(255,255,255,0.18);
+    display:flex; align-items:center; justify-content:center;
+    font-size:2.4rem; margin:0 auto 1rem;
+    border:3px solid rgba(255,255,255,0.35);
+    position:relative; z-index:1;
+  }
+  .header h1 { font-size:1.55rem; font-weight:700; margin-bottom:.2rem; position:relative; z-index:1; }
+  .header .subtitle { font-size:.88rem; opacity:.85; position:relative; z-index:1; }
+  .badge {
+    display:inline-block; background:var(--accent); color:white;
+    padding:.28rem .85rem; border-radius:20px;
+    font-size:.8rem; font-weight:700; margin-top:.75rem;
+    position:relative; z-index:1;
+  }
+
+  /* ── NAV ── */
+  .nav {
+    background:white; display:flex;
+    border-bottom:2px solid var(--border);
+    position:sticky; top:0; z-index:100;
+    box-shadow:0 2px 8px rgba(0,0,0,0.08);
+    overflow-x:auto; scrollbar-width:none;
+    -webkit-overflow-scrolling:touch;
+  }
+  .nav::-webkit-scrollbar { display:none; }
+  .nav-btn {
+    flex:1; min-width:76px; padding:.8rem .4rem;
+    border:none; background:none; cursor:pointer;
+    font-size:.72rem; font-weight:700; color:var(--text-muted);
+    text-align:center; transition:all .2s;
+    white-space:nowrap; border-bottom:3px solid transparent;
+    margin-bottom:-2px; letter-spacing:.02em;
+    touch-action:manipulation;
+    -webkit-user-select:none; user-select:none;
+  }
+  .nav-btn.active { color:var(--primary); border-bottom-color:var(--primary); }
+  .nav-btn span { display:block; font-size:1.2rem; margin-bottom:2px; }
+
+  /* ── SECTIONS ── */
+  .section { display:none; padding:1.4rem 1rem; max-width:600px; margin:0 auto; }
+  .section.active { display:block; animation:fadeIn .3s ease; }
+  @keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+
+  /* ── STATS GRID ── */
+  .stats-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:.75rem; margin-bottom:1.25rem; }
+  .stat-card { background:white; border-radius:16px; padding:1.1rem; text-align:center; box-shadow:var(--shadow); }
+  .stat-card .icon { font-size:1.45rem; margin-bottom:.35rem; }
+  .stat-card .value { font-size:1.35rem; font-weight:800; color:var(--primary); line-height:1; }
+  .stat-card .label { font-size:.72rem; color:var(--text-muted); margin-top:.2rem; }
+
+  /* ── PROGRESS CARD ── */
+  .progress-card { background:white; border-radius:16px; padding:1.4rem; box-shadow:var(--shadow); margin-bottom:1rem; }
+  .progress-card h3 { font-size:.78rem; font-weight:700; text-transform:uppercase; letter-spacing:.06em; color:var(--text-muted); margin-bottom:1rem; }
+  .progress-labels { display:flex; justify-content:space-between; margin-bottom:.5rem; font-size:.83rem; }
+  .progress-bar-bg { background:#E5E7EB; border-radius:10px; height:12px; overflow:hidden; }
+  .progress-bar-fill { height:100%; background:linear-gradient(90deg,var(--primary),var(--primary-light)); border-radius:10px; width:0%; transition:width 1.6s ease; }
+  .progress-info { display:flex; justify-content:space-between; margin-top:.6rem; font-size:.75rem; color:var(--text-muted); }
+  .progress-highlight { text-align:center; margin-top:1rem; padding:.8rem; background:var(--bg); border-radius:12px; }
+  .progress-highlight .big { font-size:1.7rem; font-weight:800; color:var(--primary); }
+  .progress-highlight .desc { font-size:.78rem; color:var(--text-muted); }
+
+  /* ── DURATION CARD ── */
+  .duration-card {
+    background:linear-gradient(135deg,#10B981 0%,#059669 100%);
+    color:white; border-radius:16px; padding:1.25rem;
+    text-align:center; box-shadow:var(--shadow); margin-bottom:1rem;
+  }
+  .duration-card .big { font-size:1.9rem; font-weight:800; }
+  .duration-card .desc { font-size:.82rem; opacity:.92; margin-top:.25rem; }
+
+  /* ── GENERAL CARD ── */
+  .card { background:white; border-radius:16px; padding:1.25rem; box-shadow:var(--shadow); margin-bottom:1rem; }
+  .card-header { display:flex; align-items:center; gap:.75rem; margin-bottom:1rem; }
+  .day-badge { width:48px; height:48px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:.82rem; flex-shrink:0; text-align:center; line-height:1.2; }
+  .day-1 { background:#EDE9FE; color:#5B21B6; }
+  .day-2 { background:#FEF3C7; color:#D97706; }
+  .day-3 { background:#D1FAE5; color:#065F46; }
+  .card-title { font-size:1rem; font-weight:700; }
+  .card-subtitle { font-size:.76rem; color:var(--text-muted); }
+
+  /* ── EXERCISE LIST ── */
+  .section-tag { font-size:.68rem; font-weight:700; text-transform:uppercase; letter-spacing:.08em; color:var(--text-muted); margin:.75rem 0 .4rem; }
+  .exercise-list { list-style:none; }
+  .exercise-item { display:flex; align-items:flex-start; gap:.65rem; padding:.6rem 0; border-bottom:1px solid var(--border); }
+  .exercise-item:last-child { border-bottom:none; }
+  .exercise-num { width:24px; height:24px; border-radius:50%; background:var(--bg); display:flex; align-items:center; justify-content:center; font-size:.68rem; font-weight:800; color:var(--primary); flex-shrink:0; margin-top:2px; }
+  .exercise-info { flex:1; }
+  .exercise-name { font-size:.88rem; font-weight:600; }
+  .exercise-detail { font-size:.75rem; color:var(--text-muted); }
+  .reps-badge { font-size:.7rem; font-weight:700; padding:.18rem .5rem; border-radius:20px; background:var(--bg); color:var(--primary); white-space:nowrap; align-self:center; border:1px solid #DDD6FE; }
+
+  /* ── CARDIO BOX ── */
+  .cardio-box { background:linear-gradient(135deg,#FEF3C7,#FDE68A); border-radius:10px; padding:.7rem .85rem; margin-top:.75rem; font-size:.83rem; font-weight:600; color:#92400E; line-height:1.5; }
+  .cooldown-box { background:#F0FDF4; border-radius:10px; padding:.7rem .85rem; margin-top:.6rem; font-size:.82rem; color:#065F46; line-height:1.5; }
+
+  /* ── MACROS CARD ── */
+  .macros-card { background:white; border-radius:16px; padding:1.25rem; box-shadow:var(--shadow); margin-bottom:1rem; }
+  .macros-title { font-size:.78rem; font-weight:700; text-transform:uppercase; letter-spacing:.05em; color:var(--text-muted); margin-bottom:1rem; }
+  .total-kcal { text-align:center; margin-top:.75rem; font-size:.9rem; font-weight:800; color:var(--primary); }
+  .macro-row { display:flex; align-items:center; gap:.65rem; margin-bottom:.7rem; }
+  .macro-label { width:68px; font-size:.8rem; font-weight:600; }
+  .macro-bar-bg { flex:1; height:8px; background:#E5E7EB; border-radius:4px; overflow:hidden; }
+  .macro-bar-fill { height:100%; border-radius:4px; }
+  .macro-value { width:55px; text-align:right; font-size:.76rem; font-weight:700; color:var(--text-muted); }
+
+  /* ── MEAL CARDS ── */
+  .meal-card { background:white; border-radius:16px; box-shadow:var(--shadow); margin-bottom:1rem; overflow:hidden; }
+  .meal-header { padding:1rem 1.25rem; display:flex; align-items:center; gap:.75rem; }
+  .meal-icon { width:48px; height:48px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:1.5rem; flex-shrink:0; }
+  .breakfast-icon { background:#FEF3C7; }
+  .lunch-icon { background:#D1FAE5; }
+  .dinner-icon { background:#EDE9FE; }
+  .meal-title { font-size:.98rem; font-weight:700; }
+  .meal-time { font-size:.75rem; color:var(--text-muted); }
+  .meal-kcal { margin-left:auto; text-align:right; }
+  .kcal-value { font-size:1.1rem; font-weight:800; color:var(--primary); }
+  .kcal-label { font-size:.62rem; color:var(--text-muted); text-transform:uppercase; }
+  .meal-body { padding:0 1.25rem 1.25rem; }
+  .food-option { border-left:3px solid #DDD6FE; padding:.55rem 0 .55rem .75rem; margin-bottom:.5rem; }
+  .food-option:last-child { margin-bottom:0; }
+  .option-label { font-size:.68rem; font-weight:700; text-transform:uppercase; color:var(--primary); margin-bottom:.2rem; letter-spacing:.04em; }
+  .food-list { font-size:.84rem; color:var(--text); line-height:1.5; }
+
+  /* ── WATER TRACKER ── */
+  .water-card { background:linear-gradient(135deg,#EFF6FF,#DBEAFE); border-radius:16px; padding:1.25rem; margin-bottom:1rem; text-align:center; }
+  .water-title { font-size:.84rem; font-weight:700; color:#1E40AF; margin-bottom:.75rem; }
+  .water-glasses { display:flex; justify-content:center; gap:.4rem; flex-wrap:wrap; margin-bottom:.5rem; }
+  .glass { width:38px; height:38px; border-radius:8px; background:rgba(59,130,246,0.12); border:2px solid rgba(59,130,246,0.25); display:flex; align-items:center; justify-content:center; font-size:1rem; cursor:pointer; transition:all .2s; }
+  .glass.filled { background:#3B82F6; border-color:#2563EB; }
+  .water-note { font-size:.75rem; color:#3B82F6; margin-top:.5rem; }
+
+  /* ── TIPS ── */
+  .tip-card { background:white; border-radius:16px; padding:1.15rem; box-shadow:var(--shadow); margin-bottom:.75rem; display:flex; gap:.75rem; align-items:flex-start; }
+  .tip-icon { font-size:1.45rem; flex-shrink:0; }
+  .tip-title { font-size:.88rem; font-weight:700; margin-bottom:.2rem; }
+  .tip-text { font-size:.8rem; color:var(--text-muted); line-height:1.55; }
+
+  /* ── FOOTER ── */
+  .footer { text-align:center; padding:2rem 1rem 2.5rem; color:var(--text-muted); font-size:.76rem; }
+  .footer strong { color:var(--primary); }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="avatar">👩</div>
+  <h1>Natalia Ramírez Henao</h1>
+  <p class="subtitle">Plan Personal de Transformación</p>
+  <div class="badge">🎯 Objetivo: Bajar 8 kg</div>
+</div>
+
+<!-- NAV -->
+<nav class="nav">
+  <button class="nav-btn active" onclick="showSection('perfil',this)">
+    <span>📊</span>Perfil
+  </button>
+  <button class="nav-btn" onclick="showSection('entrenamiento',this)">
+    <span>💪</span>Entrena
+  </button>
+  <button class="nav-btn" onclick="showSection('nutricion',this)">
+    <span>🥗</span>Nutrición
+  </button>
+  <button class="nav-btn" onclick="showSection('consejos',this)">
+    <span>💡</span>Consejos
+  </button>
+</nav>
+
+<!-- ══════════ PERFIL ══════════ -->
+<div class="section active" id="perfil">
+
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="icon">🗓️</div>
+      <div class="value">~40</div>
+      <div class="label">Años</div>
+    </div>
+    <div class="stat-card">
+      <div class="icon">⚖️</div>
+      <div class="value">74 kg</div>
+      <div class="label">Peso actual</div>
+    </div>
+    <div class="stat-card">
+      <div class="icon">📏</div>
+      <div class="value">1.70 m</div>
+      <div class="label">Estatura</div>
+    </div>
+    <div class="stat-card">
+      <div class="icon">📈</div>
+      <div class="value">25.6</div>
+      <div class="label">IMC actual</div>
+    </div>
+  </div>
+
+  <div class="progress-card">
+    <h3>Progreso hacia la meta</h3>
+    <div class="progress-labels">
+      <span>Inicio: <strong>74 kg</strong></span>
+      <span>Meta: <strong>66 kg</strong></span>
+    </div>
+    <div class="progress-bar-bg">
+      <div class="progress-bar-fill" id="progressBar"></div>
+    </div>
+    <div class="progress-info">
+      <span>IMC actual: 25.6</span>
+      <span>IMC meta: 22.8 ✓</span>
+    </div>
+    <div class="progress-highlight">
+      <div class="big">8 kg</div>
+      <div class="desc">a eliminar de forma saludable y sostenible</div>
+    </div>
+  </div>
+
+  <div class="duration-card">
+    <div class="big">4 – 5 meses</div>
+    <div class="desc">Duración estimada del plan<br>Pérdida saludable: 0.5 – 1 kg por semana</div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div style="font-size:1.5rem">🏋️‍♀️</div>
+      <div>
+        <div class="card-title">Frecuencia de entrenamiento</div>
+        <div class="card-subtitle">Gimnasio · 3 días por semana</div>
+      </div>
+    </div>
+    <div style="font-size:.84rem;color:var(--text-muted);line-height:1.6">
+      Plan distribuido en días alternos (Lun – Mié – Vie) para una recuperación muscular óptima. Combina fuerza con cardio para maximizar la quema de grasa preservando el músculo.
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div style="font-size:1.5rem">🔥</div>
+      <div>
+        <div class="card-title">Calorías estimadas</div>
+        <div class="card-subtitle">Metabolismo basal calculado (Mifflin-St Jeor)</div>
+      </div>
+    </div>
+    <div style="font-size:.84rem;color:var(--text-muted);line-height:1.65">
+      <strong style="color:var(--text)">Mantenimiento:</strong> ~1.980 kcal/día<br>
+      <strong style="color:var(--text)">Plan de pérdida:</strong> ~1.550 kcal/día<br>
+      <strong style="color:var(--text)">Déficit:</strong> ~430 kcal/día → 0.5 kg/semana
+    </div>
+  </div>
+
+</div>
+
+<!-- ══════════ ENTRENAMIENTO ══════════ -->
+<div class="section" id="entrenamiento">
+
+  <!-- DÍA 1 — LUNES -->
+  <div class="card">
+    <div class="card-header">
+      <div class="day-badge day-1">LUN</div>
+      <div>
+        <div class="card-title">Tren Superior</div>
+        <div class="card-subtitle">Pecho · Espalda · Hombros · Brazos · ~75 min</div>
+      </div>
+    </div>
+
+    <div class="section-tag">🔥 Calentamiento — 10 min</div>
+    <div style="font-size:.83rem;color:var(--text-muted);padding:.2rem 0 .7rem">Caminata rápida o bicicleta estática a ritmo suave</div>
+
+    <div class="section-tag">💪 Fuerza — 45 min</div>
+    <ul class="exercise-list">
+      <li class="exercise-item">
+        <div class="exercise-num">1</div>
+        <div class="exercise-info">
+          <div class="exercise-name">Press de pecho con mancuernas</div>
+          <div class="exercise-detail">En banco plano · descanso 60 seg entre series</div>
+        </div>
+        <div class="reps-badge">3 × 12</div>
+      </li>
+      <li class="exercise-item">
+        <div class="exercise-num">2</div>
+        <div class="exercise-info">
+          <div class="exercise-name">Remo en máquina o cable bajo</div>
+          <div class="exercise-detail">Agarre neutro · control en el descenso</div>
+        </div>
+        <div class="reps-badge">3 × 12</div>
+      </li>
+      <li class="exercise-item">
+        <div class="exercise-num">3</div>
+        <div class="exercise-info">
+          <div class="exercise-name">Press de hombros con mancuernas</div>
+          <div class="exercise-detail">Sentada · core firme · codos a 90°</div>
+        </div>
+        <div class="reps-badge">3 × 12</div>
+      </li>
+      <li class="exercise-item">
+        <div class="exercise-num">4</div>
+        <div class="exercise-info">
+          <div class="exercise-name">Curl de bíceps con mancuernas</div>
+          <div class="exercise-detail">Codos fijos al cuerpo · sin balanceo</div>
+        </div>
+        <div class="reps-badge">3 × 15</div>
+      </li>
+      <li class="exercise-item">
+        <div class="exercise-num">5</div>
+        <div class="exercise-info">
+          <div class="exercise-name">Extensión de tríceps en polea</div>
+          <div class="exercise-detail">Cuerda o barra · codos pegados al cuerpo</div>
+        </div>
+        <div class="reps-badge">3 × 15</div>
+      </li>
+      <li class="exercise-item">
+        <div class="exercise-num">6</div>
+        <div class="exercise-info">
+          <div class="exercise-name">Face pulls en cable</div>
+          <div class="exercise-detail">Hombro posterior y manguito rotador</div>
+        </div>
+        <div class="reps-badge">3 × 15</div>
+      </li>
+    </ul>
+    <div class="cardio-box">🚶‍♀️ Cardio final: 20 min caminata con inclinación o elíptica ritmo moderado</div>
+  </div>
+
+  <!-- DÍA 2 — MIÉRCOLES -->
+  <div class="card">
+    <div class="card-header">
+      <div class="day-badge day-2">MIÉ</div>
+      <div>
+        <div class="card-title">Tren Inferior + Core</div>
+        <div class="card-subtitle">Piernas · Glúteos · Abdomen · ~75 min</div>
+      </div>
+    </div>
+
+    <div class="section-tag">🔥 Calentamiento — 10 min</div>
+    <div style="font-size:.83rem;color:var(--text-muted);padding:.2rem 0 .7rem">Bicicleta estática a ritmo moderado</div>
+
+    <div class="section-tag">💪 Fuerza — 50 min</div>
+    <ul class="exercise-list">
+      <li class="exercise-item">
+        <div class="exercise-num">1</div>
+        <div class="exercise-info">
+          <div class="exercise-name">Sentadilla con mancuernas o barra</div>
+          <div class="exercise-detail">Profundidad paralela · rodillas alineadas con pies</div>
+        </div>
+        <div class="reps-badge">4 × 15</div>
+      </li>
+      <li class="exercise-item">
+        <div class="exercise-num">2</div>
+        <div class="exercise-info">
+          <div class="exercise-name">Prensa de piernas</div>
+          <div class="exercise-detail">Pies al ancho de hombros · no bloquees rodillas</div>
+        </div>
+        <div class="reps-badge">3 × 15</div>
+      </li>
+      <li class="exercise-item">
+        <div class="exercise-num">3</div>
+        <div class="exercise-info">
+          <div class="exercise-name">Peso muerto rumano con mancuernas</div>
+          <div class="exercise-detail">Isquiotibiales · espalda recta en todo momento</div>
+        </div>
+        <div class="reps-badge">3 × 12</div>
+      </li>
+      <li class="exercise-item">
+        <div class="exercise-num">4</div>
+        <div class="exercise-info">
+          <div class="exercise-name">Abducción en máquina</div>
+          <div class="exercise-detail">Glúteo medio · movimiento lento y controlado</div>
+        </div>
+        <div class="reps-badge">3 × 20</div>
+      </li>
+      <li class="exercise-item">
+        <div class="exercise-num">5</div>
+        <div class="exercise-info">
+          <div class="exercise-name">Plancha frontal</div>
+          <div class="exercise-detail">Core activo · caderas alineadas · respira</div>
+        </div>
+        <div class="reps-badge">3 × 40 seg</div>
+      </li>
+      <li class="exercise-item">
+        <div class="exercise-num">6</div>
+        <div class="exercise-info">
+          <div class="exercise-name">Elevación de piernas en banco</div>
+          <div class="exercise-detail">Abdomen bajo · movimiento lento sin impulso</div>
+        </div>
+        <div class="reps-badge">3 × 15</div>
+      </li>
+    </ul>
+    <div class="cardio-box">🚴‍♀️ Cardio final: 15 min caminata con inclinación 8–10%</div>
+  </div>
+
+  <!-- DÍA 3 — VIERNES -->
+  <div class="card">
+    <div class="card-header">
+      <div class="day-badge day-3">VIE</div>
+      <div>
+        <div class="card-title">Cuerpo Completo + HIIT</div>
+        <div class="card-subtitle">Fuerza funcional · Quema máxima de grasa · ~75 min</div>
+      </div>
+    </div>
+
+    <div class="section-tag">🔥 Calentamiento — 5 min</div>
+    <div style="font-size:.83rem;color:var(--text-muted);padding:.2rem 0 .7rem">Movilidad articular y saltos suaves en el lugar</div>
+
+    <div class="section-tag">💪 Fuerza — 35 min</div>
+    <ul class="exercise-list">
+      <li class="exercise-item">
+        <div class="exercise-num">1</div>
+        <div class="exercise-info">
+          <div class="exercise-name">Hip Thrust con barra o mancuerna</div>
+          <div class="exercise-detail">Glúteo máximo · aprieta arriba 1 segundo</div>
+        </div>
+        <div class="reps-badge">4 × 15</div>
+      </li>
+      <li class="exercise-item">
+        <div class="exercise-num">2</div>
+        <div class="exercise-info">
+          <div class="exercise-name">Zancadas alternadas con mancuernas</div>
+          <div class="exercise-detail">Rodilla trasera cerca del piso · torso erguido</div>
+        </div>
+        <div class="reps-badge">3 × 12 c/u</div>
+      </li>
+      <li class="exercise-item">
+        <div class="exercise-num">3</div>
+        <div class="exercise-info">
+          <div class="exercise-name">Jalón en polea alta</div>
+          <div class="exercise-detail">Espalda · agarre prono o supino</div>
+        </div>
+        <div class="reps-badge">3 × 12</div>
+      </li>
+      <li class="exercise-item">
+        <div class="exercise-num">4</div>
+        <div class="exercise-info">
+          <div class="exercise-name">Fondos en banco (tríceps)</div>
+          <div class="exercise-detail">Codos atrás · bajar con control</div>
+        </div>
+        <div class="reps-badge">3 × 15</div>
+      </li>
+    </ul>
+    <div class="cardio-box">
+      ⚡ HIIT: 20 min — 1 min intenso / 1 min recuperación × 10 rondas<br>
+      <span style="font-size:.76rem;font-weight:400;opacity:.85">Opciones: elíptica · remo · bicicleta · cinta con inclinación</span>
+    </div>
+    <div class="cooldown-box">🧘‍♀️ <strong>Enfriamiento:</strong> 10 min de estiramientos generales — no saltarse, es clave para la recuperación</div>
+  </div>
+
+</div>
+
+<!-- ══════════ NUTRICIÓN ══════════ -->
+<div class="section" id="nutricion">
+
+  <!-- Macros -->
+  <div class="macros-card">
+    <div class="macros-title">Distribución calórica diaria</div>
+    <div class="macro-row">
+      <div class="macro-label" style="color:#7C3AED">Proteína</div>
+      <div class="macro-bar-bg">
+        <div class="macro-bar-fill" style="width:33%;background:#7C3AED"></div>
+      </div>
+      <div class="macro-value">120–130 g</div>
+    </div>
+    <div class="macro-row">
+      <div class="macro-label" style="color:#F59E0B">Carbos</div>
+      <div class="macro-bar-bg">
+        <div class="macro-bar-fill" style="width:41%;background:#F59E0B"></div>
+      </div>
+      <div class="macro-value">150–160 g</div>
+    </div>
+    <div class="macro-row">
+      <div class="macro-label" style="color:#10B981">Grasas</div>
+      <div class="macro-bar-bg">
+        <div class="macro-bar-fill" style="width:14%;background:#10B981"></div>
+      </div>
+      <div class="macro-value">50–60 g</div>
+    </div>
+    <div class="total-kcal">≈ 1.550 kcal / día</div>
+  </div>
+
+  <!-- DESAYUNO -->
+  <div class="meal-card">
+    <div class="meal-header">
+      <div class="meal-icon breakfast-icon">🌅</div>
+      <div>
+        <div class="meal-title">Desayuno</div>
+        <div class="meal-time">7:00 – 8:00 am</div>
+      </div>
+      <div class="meal-kcal">
+        <div class="kcal-value">~400</div>
+        <div class="kcal-label">kcal</div>
+      </div>
+    </div>
+    <div class="meal-body">
+      <div class="food-option">
+        <div class="option-label">Opción A</div>
+        <div class="food-list">2 huevos revueltos · 1 tostada pan integral · 1 fruta mediana · café o té sin azúcar</div>
+      </div>
+      <div class="food-option">
+        <div class="option-label">Opción B</div>
+        <div class="food-list">50 g avena cocida · 150 g yogur griego natural · 1 fruta pequeña (banano o fresas)</div>
+      </div>
+      <div class="food-option">
+        <div class="option-label">Opción C — Batido</div>
+        <div class="food-list">200 ml leche descremada · 1 fruta · 30 g avena en polvo · 2 claras de huevo</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ALMUERZO -->
+  <div class="meal-card">
+    <div class="meal-header">
+      <div class="meal-icon lunch-icon">☀️</div>
+      <div>
+        <div class="meal-title">Almuerzo</div>
+        <div class="meal-time">12:00 – 1:00 pm</div>
+      </div>
+      <div class="meal-kcal">
+        <div class="kcal-value">~700</div>
+        <div class="kcal-label">kcal</div>
+      </div>
+    </div>
+    <div class="meal-body">
+      <div class="food-option">
+        <div class="option-label">Proteína — escoge 1</div>
+        <div class="food-list">150–180 g pechuga de pollo · 180 g tilapia o atún · 150 g carne de res magra</div>
+      </div>
+      <div class="food-option">
+        <div class="option-label">Carbohidrato — escoge 1</div>
+        <div class="food-list">½ taza arroz integral · ½ taza quinoa · 1 papa mediana cocida · ½ taza lentejas</div>
+      </div>
+      <div class="food-option">
+        <div class="option-label">Vegetales — cantidad libre</div>
+        <div class="food-list">Ensalada verde grande · tomate · zanahoria · pepino · remolacha · aguacate (¼)</div>
+      </div>
+      <div class="food-option">
+        <div class="option-label">Aderezo</div>
+        <div class="food-list">1 cdita aceite de oliva + limón + hierbas al gusto. Evitar salsas procesadas y mayonesa.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CENA -->
+  <div class="meal-card">
+    <div class="meal-header">
+      <div class="meal-icon dinner-icon">🌙</div>
+      <div>
+        <div class="meal-title">Cena</div>
+        <div class="meal-time">6:00 – 7:00 pm</div>
+      </div>
+      <div class="meal-kcal">
+        <div class="kcal-value">~450</div>
+        <div class="kcal-label">kcal</div>
+      </div>
+    </div>
+    <div class="meal-body">
+      <div class="food-option">
+        <div class="option-label">Proteína — escoge 1</div>
+        <div class="food-list">120–150 g pollo o pescado · 2 huevos + 3 claras · 1 taza lentejas o garbanzos cocidos</div>
+      </div>
+      <div class="food-option">
+        <div class="option-label">Vegetales — abundante</div>
+        <div class="food-list">Brócoli · espinaca · calabacín · pimentón · coliflor · champiñones. Al vapor, salteados o en sopa.</div>
+      </div>
+      <div class="food-option">
+        <div class="option-label">Carbohidratos</div>
+        <div class="food-list">Solo si entrenaste hoy: ½ taza arroz integral.<br>Días de descanso: omitir o reemplazar por más vegetales.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- AGUA -->
+  <div class="water-card">
+    <div class="water-title">💧 Hidratación diaria — Mínimo 2 litros</div>
+    <div class="water-glasses" id="waterGlasses"></div>
+    <div class="water-note">Toca cada vaso para marcarlo · <span id="waterCount">0</span> / 8 tomados hoy</div>
+  </div>
+
+  <!-- ALIMENTOS A EVITAR -->
+  <div class="card">
+    <div class="card-header">
+      <div style="font-size:1.5rem">🚫</div>
+      <div>
+        <div class="card-title">Reducir al mínimo</div>
+        <div class="card-subtitle">Máximo 1 vez por semana</div>
+      </div>
+    </div>
+    <div style="font-size:.84rem;color:var(--text-muted);line-height:1.7">
+      Bebidas azucaradas (jugos, gaseosas) · alcohol · harinas refinadas (pan blanco, pastas) · frituras · ultraprocesados · salsas comerciales (mayonesa, ketchup) · dulces y postres industriales.
+    </div>
+  </div>
+
+</div>
+
+<!-- ══════════ CONSEJOS ══════════ -->
+<div class="section" id="consejos">
+
+  <div class="tip-card">
+    <div class="tip-icon">😴</div>
+    <div>
+      <div class="tip-title">Sueño y recuperación</div>
+      <div class="tip-text">Dormir 7–8 horas es tan importante como entrenar. Durante el sueño el cuerpo quema grasa y repara músculo. Evitá pantallas 1 hora antes de acostarte.</div>
+    </div>
+  </div>
+
+  <div class="tip-card">
+    <div class="tip-icon">📅</div>
+    <div>
+      <div class="tip-title">Días de descanso</div>
+      <div class="tip-text">Los días que no vayas al gym hacé actividad suave: caminata de 30–45 min, yoga o stretching. El cuerpo necesita moverse pero también recuperarse.</div>
+    </div>
+  </div>
+
+  <div class="tip-card">
+    <div class="tip-icon">⚖️</div>
+    <div>
+      <div class="tip-title">Pesarte correctamente</div>
+      <div class="tip-text">Pesate 1 vez por semana, siempre el mismo día y hora, en ayunas. No a diario: el peso fluctúa hasta 2 kg por líquidos, hormonas y digestión.</div>
+    </div>
+  </div>
+
+  <div class="tip-card">
+    <div class="tip-icon">💪</div>
+    <div>
+      <div class="tip-title">Progresión de pesos</div>
+      <div class="tip-text">Cada 2–3 semanas intentá aumentar el peso un poco o agregar 1–2 repeticiones. El músculo crece cuando lo desafiás. No te quedés con el mismo peso todo el plan.</div>
+    </div>
+  </div>
+
+  <div class="tip-card">
+    <div class="tip-icon">🍽️</div>
+    <div>
+      <div class="tip-title">Hábitos en la mesa</div>
+      <div class="tip-text">Comé despacio y sin pantallas. Masticá bien. El cerebro tarda 20 min en registrar saciedad — comer rápido lleva a comer de más sin darte cuenta.</div>
+    </div>
+  </div>
+
+  <div class="tip-card">
+    <div class="tip-icon">📸</div>
+    <div>
+      <div class="tip-title">Fotografías de progreso</div>
+      <div class="tip-text">Tomate fotos cada 4 semanas con la misma ropa, luz y posición. La balanza no cuenta toda la historia: podés perder grasa y ganar músculo simultáneamente.</div>
+    </div>
+  </div>
+
+  <div class="tip-card">
+    <div class="tip-icon">🩸</div>
+    <div>
+      <div class="tip-title">Ciclo hormonal</div>
+      <div class="tip-text">Es normal sentir más fatiga o retención de líquidos ciertos días del ciclo. Respetá esos días con ejercicio más suave — no es excusa para parar, es inteligencia corporal.</div>
+    </div>
+  </div>
+
+  <div class="tip-card">
+    <div class="tip-icon">🧠</div>
+    <div>
+      <div class="tip-title">Mentalidad y constancia</div>
+      <div class="tip-text">La constancia supera a la perfección. Un día malo no arruina el proceso: si fallaste en la comida, no abandones el plan. La próxima comida es una oportunidad de volver. ¡Vos podés!</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  Plan diseñado para <strong>Natalia Ramírez Henao</strong><br>
+  Julio 2026 · Elaborado por Oscar Ramírez
+</div>
+
+<script>
+  function showSection(id, btn) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    btn.classList.add('active');
+    window.scrollTo(0, 0);
+    if (id === 'perfil') animateProgress();
+  }
+
+  function animateProgress() {
+    setTimeout(() => {
+      document.getElementById('progressBar').style.width = '10%';
+    }, 150);
+  }
+
+  window.addEventListener('load', () => {
+    animateProgress();
+    buildWaterTracker();
+    // Refuerzo táctil para móvil
+    document.querySelectorAll('.nav-btn').forEach(btn => {
+      btn.addEventListener('touchend', function(e) {
+        e.preventDefault();
+        this.click();
+      }, { passive: false });
+    });
+  });
+
+  function buildWaterTracker() {
+    const container = document.getElementById('waterGlasses');
+    let filled = 0;
+    for (let i = 0; i < 8; i++) {
+      const g = document.createElement('div');
+      g.className = 'glass';
+      g.textContent = '💧';
+      g.addEventListener('click', function() {
+        this.classList.toggle('filled');
+        filled = document.querySelectorAll('.glass.filled').length;
+        document.getElementById('waterCount').textContent = filled;
+      });
+      container.appendChild(g);
+    }
+  }
+</script>
+</body>
+</html>
