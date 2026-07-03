@@ -190,6 +190,43 @@
   /* ── FOOTER ── */
   .footer { text-align:center; padding:2rem 1rem 2.5rem; color:var(--text-muted); font-size:.76rem; }
   .footer strong { color:var(--primary); }
+
+  /* ── CUMPLIMIENTO DE META ── */
+  .setup-card { background:linear-gradient(135deg,#EDE9FE,#DDD6FE); border-radius:16px; padding:1.5rem; text-align:center; margin-bottom:1rem; }
+  .setup-title { font-size:1.1rem; font-weight:800; margin-bottom:.4rem; }
+  .setup-sub { font-size:.83rem; color:var(--text-muted); margin-bottom:1.25rem; line-height:1.5; }
+  input.date-inp { width:100%; padding:.75rem; border:2px solid #DDD6FE; border-radius:10px; font-size:1rem; text-align:center; background:white; color:var(--text); }
+  .btn-ok { width:100%; padding:.8rem; background:var(--primary); color:white; border:none; border-radius:10px; font-size:.95rem; font-weight:700; cursor:pointer; margin-top:.65rem; touch-action:manipulation; }
+  .meta-hdr { display:flex; align-items:center; justify-content:space-between; margin-bottom:1rem; background:white; border-radius:14px; padding:1rem 1.25rem; box-shadow:var(--shadow); }
+  .meta-hdr-lbl { font-size:.68rem; font-weight:700; text-transform:uppercase; letter-spacing:.05em; color:var(--text-muted); }
+  .meta-hdr-val { font-size:1rem; font-weight:700; margin-top:.15rem; }
+  .btn-link { background:none; border:none; color:var(--primary); font-size:.78rem; cursor:pointer; text-decoration:underline; touch-action:manipulation; padding:0; }
+  .meta-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:.65rem; margin-bottom:1rem; }
+  .meta-card { background:white; border-radius:14px; padding:1rem; text-align:center; box-shadow:var(--shadow); }
+  .meta-card .mv { font-size:1.35rem; font-weight:800; color:var(--primary); line-height:1.1; }
+  .meta-card .ml { font-size:.68rem; color:var(--text-muted); margin-top:.2rem; }
+  .sec-lbl { font-size:.72rem; font-weight:700; text-transform:uppercase; letter-spacing:.06em; color:var(--text-muted); margin:.75rem 0 .5rem; }
+  .day-row { display:flex; align-items:center; gap:.55rem; padding:.6rem 0; border-bottom:1px solid var(--border); }
+  .day-row:last-child { border-bottom:none; }
+  .day-today { background:var(--bg); border-radius:10px; padding:.6rem .65rem; margin:2px -.65rem; }
+  .day-nm { font-size:.88rem; font-weight:700; }
+  .day-bdgs { display:flex; gap:.3rem; flex-wrap:wrap; margin-top:.18rem; }
+  .bdg { font-size:.62rem; font-weight:700; padding:.14rem .42rem; border-radius:20px; }
+  .bdg-hoy { background:#FEF3C7; color:#D97706; }
+  .bdg-gym { background:#EDE9FE; color:var(--primary); }
+  .bdg-rest { background:#F3F4F6; color:#9CA3AF; }
+  .chks { display:flex; gap:.4rem; flex-shrink:0; }
+  .chk-wrap { display:flex; flex-direction:column; align-items:center; gap:.1rem; }
+  .chk { width:36px; height:36px; border-radius:8px; border:2px solid var(--border); background:white; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:1rem; font-weight:700; touch-action:manipulation; transition:all .15s; color:transparent; }
+  .chk-trn { background:var(--primary); border-color:var(--primary); color:white; }
+  .chk-nut { background:var(--success); border-color:var(--success); color:white; }
+  .chk-lbl { font-size:.58rem; color:var(--text-muted); text-align:center; line-height:1; }
+  details.whist { background:white; border-radius:14px; box-shadow:var(--shadow); margin-bottom:.6rem; overflow:hidden; }
+  details.whist summary { list-style:none; display:flex; align-items:center; justify-content:space-between; padding:.95rem 1.25rem; cursor:pointer; touch-action:manipulation; user-select:none; }
+  details.whist summary::-webkit-details-marker { display:none; }
+  .wh-title { font-size:.9rem; font-weight:700; }
+  .wh-pct { font-size:.88rem; font-weight:800; }
+  .wh-body { padding:0 1.25rem .75rem; }
 </style>
 </head>
 <body>
@@ -215,6 +252,9 @@
   </button>
   <button class="nav-btn" onclick="showSection('consejos',this)">
     <span>💡</span>Consejos
+  </button>
+  <button class="nav-btn" onclick="showSection('meta',this)">
+    <span>🎯</span>Meta
   </button>
 </nav>
 
@@ -705,6 +745,59 @@
 
 </div>
 
+<!-- ══════════ CUMPLIMIENTO DE META ══════════ -->
+<div class="section" id="meta">
+
+  <!-- Configurar fecha de inicio -->
+  <div id="metaSetup">
+    <div class="setup-card">
+      <div style="font-size:2.2rem;margin-bottom:.5rem">🎯</div>
+      <div class="setup-title">Activar seguimiento diario</div>
+      <div class="setup-sub">Seleccioná la fecha en que Natalia comienza el plan para empezar a registrar el cumplimiento.</div>
+      <input type="date" class="date-inp" id="startDateInput">
+      <button class="btn-ok" onclick="confirmStartDate()">Comenzar seguimiento</button>
+    </div>
+  </div>
+
+  <!-- Vista principal -->
+  <div id="metaMain" style="display:none">
+
+    <div class="meta-hdr">
+      <div>
+        <div class="meta-hdr-lbl">Plan activo desde</div>
+        <div class="meta-hdr-val" id="metaStartLabel"></div>
+      </div>
+      <button class="btn-link" onclick="changeStartDate()">Cambiar fecha</button>
+    </div>
+
+    <div class="meta-grid">
+      <div class="meta-card">
+        <div class="mv" id="statDias">—</div>
+        <div class="ml">Días en el plan</div>
+      </div>
+      <div class="meta-card">
+        <div class="mv" id="statRacha">🔥 0</div>
+        <div class="ml">Racha actual</div>
+      </div>
+      <div class="meta-card">
+        <div class="mv" id="statEntrenos">—</div>
+        <div class="ml">Entrenos cumplidos</div>
+      </div>
+      <div class="meta-card">
+        <div class="mv" id="statNutricion">—</div>
+        <div class="ml">Nutrición cumplida</div>
+      </div>
+    </div>
+
+    <div class="sec-lbl">Semana actual</div>
+    <div class="card" id="curWeek"></div>
+
+    <div class="sec-lbl" id="histLabel" style="display:none">Semanas anteriores</div>
+    <div id="weekHist"></div>
+
+  </div>
+</div>
+
 <!-- FOOTER -->
 <div class="footer">
   Plan diseñado para <strong>Natalia Ramírez Henao</strong><br>
@@ -719,12 +812,169 @@
     btn.classList.add('active');
     window.scrollTo(0, 0);
     if (id === 'perfil') animateProgress();
+    if (id === 'meta') initMeta();
   }
 
   function animateProgress() {
     setTimeout(() => {
       document.getElementById('progressBar').style.width = '10%';
     }, 150);
+  }
+
+  // ── COMPLIANCE TRACKER ──
+  const _KEY = 'plan_natalia_2026';
+  const _GYM = [1, 3, 5];
+  const _MES = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+  const _DIA = ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
+  let _pd = { startDate: null, checks: {} };
+
+  function _loadPlan() {
+    try { const s = localStorage.getItem(_KEY); if (s) _pd = JSON.parse(s); } catch(e) {}
+  }
+  function _savePlan() { localStorage.setItem(_KEY, JSON.stringify(_pd)); }
+  function _ds(d) {
+    return d.getFullYear() + '-' +
+      String(d.getMonth()+1).padStart(2,'0') + '-' +
+      String(d.getDate()).padStart(2,'0');
+  }
+  function _td(s) { const [y,m,d] = s.split('-').map(Number); return new Date(y, m-1, d); }
+  function _today() { const t = new Date(); t.setHours(0,0,0,0); return t; }
+
+  function initMeta() {
+    _loadPlan();
+    if (!_pd.startDate) {
+      document.getElementById('metaSetup').style.display = '';
+      document.getElementById('metaMain').style.display = 'none';
+      document.getElementById('startDateInput').value = _ds(_today());
+    } else {
+      document.getElementById('metaSetup').style.display = 'none';
+      document.getElementById('metaMain').style.display = '';
+      renderMeta();
+    }
+  }
+
+  function confirmStartDate() {
+    const v = document.getElementById('startDateInput').value;
+    if (!v) return;
+    _pd.startDate = v;
+    _savePlan();
+    document.getElementById('metaSetup').style.display = 'none';
+    document.getElementById('metaMain').style.display = '';
+    renderMeta();
+  }
+
+  function changeStartDate() {
+    document.getElementById('metaSetup').style.display = '';
+    document.getElementById('metaMain').style.display = 'none';
+    document.getElementById('startDateInput').value = _pd.startDate || _ds(_today());
+  }
+
+  function metaToggle(dateStr, type) {
+    if (!_pd.checks[dateStr]) _pd.checks[dateStr] = {};
+    _pd.checks[dateStr][type] = !_pd.checks[dateStr][type];
+    _savePlan();
+    renderMeta();
+  }
+
+  function renderMeta() {
+    const start = _td(_pd.startDate);
+    const t = _today();
+    const allDays = [];
+    const cur = new Date(start);
+    while (cur <= t) { allDays.push(new Date(cur)); cur.setDate(cur.getDate()+1); }
+
+    let gymT=0, gymD=0, nutT=0, nutD=0, streak=0, strOn=true;
+    for (let i = allDays.length-1; i >= 0; i--) {
+      const d = allDays[i];
+      const dstr = _ds(d);
+      const gym = _GYM.includes(d.getDay());
+      const ch = _pd.checks[dstr] || {};
+      nutT++; if (ch.nutrition) nutD++;
+      if (gym) { gymT++; if (ch.training) gymD++; }
+      if (strOn) { const ok = ch.nutrition && (!gym || ch.training); if (ok) streak++; else strOn = false; }
+    }
+
+    document.getElementById('statDias').textContent = allDays.length;
+    document.getElementById('statRacha').textContent = '🔥 ' + streak;
+    document.getElementById('statEntrenos').textContent = gymT ? Math.round(gymD/gymT*100)+'%' : '—';
+    document.getElementById('statNutricion').textContent = nutT ? Math.round(nutD/nutT*100)+'%' : '—';
+    document.getElementById('metaStartLabel').textContent =
+      start.getDate() + ' ' + _MES[start.getMonth()] + ' ' + start.getFullYear();
+
+    const wd = t.getDay();
+    const mon = new Date(t);
+    mon.setDate(t.getDate() - (wd === 0 ? 6 : wd - 1));
+    _renderWeek(document.getElementById('curWeek'), mon, t, start);
+
+    const hist = document.getElementById('weekHist');
+    hist.innerHTML = '';
+    const wMon = new Date(start);
+    const sd3 = wMon.getDay();
+    wMon.setDate(wMon.getDate() - (sd3 === 0 ? 6 : sd3 - 1));
+    const histWeeks = [];
+    const it = new Date(wMon);
+    while (it < mon) { histWeeks.push(new Date(it)); it.setDate(it.getDate()+7); }
+    histWeeks.reverse();
+    document.getElementById('histLabel').style.display = histWeeks.length ? '' : 'none';
+
+    histWeeks.forEach((ws, idx) => {
+      const we = new Date(ws); we.setDate(ws.getDate()+6);
+      let wgt=0, wgd=0, wnt=0, wnd=0;
+      const wc = new Date(ws);
+      while (wc <= we && wc <= t) {
+        const ds2=_ds(wc), gym2=_GYM.includes(wc.getDay()), ch2=_pd.checks[ds2]||{};
+        wnt++; if(ch2.nutrition) wnd++;
+        if(gym2) { wgt++; if(ch2.training) wgd++; }
+        wc.setDate(wc.getDate()+1);
+      }
+      const pct = (wgt+wnt) ? Math.round((wgd+wnd)/(wgt+wnt)*100) : 0;
+      const wNum = histWeeks.length - idx;
+      const pctColor = pct >= 80 ? '#10B981' : pct >= 50 ? '#F59E0B' : '#EF4444';
+      const wsStr = _ds(ws);
+      const det = document.createElement('details');
+      det.className = 'whist';
+      det.innerHTML = `<summary><span class="wh-title">Semana ${wNum}</span><span class="wh-pct" style="color:${pctColor}">${pct}% ›</span></summary><div class="wh-body" id="wb_${idx}"></div>`;
+      det.addEventListener('toggle', function() {
+        if (this.open && !this._done) { this._done = true; _renderWeek(document.getElementById('wb_'+idx), _td(wsStr), t, start); }
+      });
+      hist.appendChild(det);
+    });
+  }
+
+  function _renderWeek(container, weekStart, today, planStart) {
+    container.innerHTML = '';
+    for (let i = 0; i < 7; i++) {
+      const d = new Date(weekStart); d.setDate(weekStart.getDate()+i);
+      const dstr = _ds(d);
+      const gym = _GYM.includes(d.getDay());
+      const isToday = _ds(d) === _ds(today);
+      const isPast = d <= today;
+      const beforeStart = d < planStart;
+      const ch = _pd.checks[dstr] || {};
+
+      const row = document.createElement('div');
+      row.className = 'day-row' + (isToday ? ' day-today' : '');
+
+      let bdgs = '';
+      if (isToday) bdgs += '<span class="bdg bdg-hoy">Hoy</span>';
+      if (!beforeStart) {
+        if (gym) bdgs += '<span class="bdg bdg-gym">GYM 💪</span>';
+        else if (isPast) bdgs += '<span class="bdg bdg-rest">Descanso</span>';
+      }
+
+      let chks = '';
+      if (!beforeStart && isPast) {
+        if (gym) chks += `<div class="chk-wrap"><button class="chk ${ch.training?'chk-trn':''}" onclick="metaToggle('${dstr}','training')">${ch.training?'✓':''}</button><div class="chk-lbl">Entrena</div></div>`;
+        chks += `<div class="chk-wrap"><button class="chk ${ch.nutrition?'chk-nut':''}" onclick="metaToggle('${dstr}','nutrition')">${ch.nutrition?'✓':''}</button><div class="chk-lbl">Nutri</div></div>`;
+      } else if (!isPast && !beforeStart) {
+        chks = '<span style="font-size:.72rem;color:var(--text-muted)">Próximo</span>';
+      } else {
+        chks = '<span style="font-size:.72rem;color:var(--text-muted)">—</span>';
+      }
+
+      row.innerHTML = `<div style="flex:1;min-width:0"><div class="day-nm">${_DIA[d.getDay()]} ${d.getDate()} ${_MES[d.getMonth()]}</div><div class="day-bdgs">${bdgs}</div></div><div class="chks">${chks}</div>`;
+      container.appendChild(row);
+    }
   }
 
   window.addEventListener('load', () => {
